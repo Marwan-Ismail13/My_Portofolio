@@ -169,7 +169,7 @@ export default function Hero() {
               className="relative z-10 w-[90%] h-[90%] rounded-2xl overflow-hidden border border-brand-gold/30"
             >
               <img
-                src="/MyImage.png"
+                src={`${import.meta.env.BASE_URL}MyImage.png`}
                 alt="Marwan Zidan"
                 className="w-full h-full object-cover object-center"
               />

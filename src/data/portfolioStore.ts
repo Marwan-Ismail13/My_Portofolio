@@ -68,7 +68,7 @@ export const defaultPortfolio: PortfolioContent = {
     keywords: ['Marwan Zidan', 'software engineer', 'portfolio'],
     ogTitle: 'Marwan Zidan | Software Engineer',
     ogDescription: 'Portfolio of Marwan Zidan, software engineer based in Giza, Egypt.',
-    ogImage: '/MyImage.png',
+    ogImage: `${import.meta.env.BASE_URL}MyImage.png`,
     twitterTitle: 'Marwan Zidan | Software Engineer',
     twitterDescription: 'Portfolio of Marwan Zidan, software engineer based in Giza, Egypt.',
     canonicalUrl: 'https://your-domain.com'
