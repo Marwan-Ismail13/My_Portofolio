@@ -98,7 +98,6 @@ export default function About() {
               <InfoBadge label="University" value={personal.university} />
               <InfoBadge label="Degree" value={personal.degree} />
               <InfoBadge label="Expected Graduation" value={personal.expectedGraduation} />
-              <InfoBadge label="GPA" value={personal.gpa} />
               <InfoBadge label="Location" value={personal.location} />
               <InfoBadge label="Languages" value={personal.languages.join(', ')} />
             </div>

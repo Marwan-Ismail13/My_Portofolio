@@ -34,7 +34,6 @@ export default function Education() {
               </div>
               <div className="text-right text-sm text-[#A8A8A8]">
                 <p>{item.expectedGraduation}</p>
-                <p className="mt-2">GPA: {item.gpa}</p>
               </div>
             </div>
             <div className="mt-6 space-y-4">
