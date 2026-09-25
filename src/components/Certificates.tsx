@@ -4,7 +4,7 @@ import SectionHeader from './ui/SectionHeader';
 import AchievementCard from './ui/AchievementCard';
 
 export default function Certificates() {
-  const { content: { certificates, education } } = usePortfolio();
+  const { content: { certificates, education, achievements } } = usePortfolio();
   // Combine education and certificates for achievements
   const educationAchievements = education.map((edu) => ({
     type: 'education' as const,
@@ -38,7 +38,7 @@ export default function Certificates() {
           description="Academic credentials, professional certifications, and competitive programming accomplishments."
         />
 
-        {allAchievements.length === 0 ? (
+        {allAchievements.length === 0 && achievements.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -126,6 +126,36 @@ export default function Certificates() {
                       year={cert.date}
                       category={cert.category}
                       isHighlighted={index === 0}
+                      index={index}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {achievements.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="mt-16"
+              >
+                <h3 className="mb-6 flex items-center gap-3 text-xl font-bold text-brand-text sm:text-2xl">
+                  <span className="text-brand-gold">▪</span> Competitive Achievements
+                </h3>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  {achievements.map((achievement, index) => (
+                    <AchievementCard
+                      key={achievement.id}
+                      title={achievement.title}
+                      description={`${achievement.organization} - ${achievement.description}`}
+                      year={achievement.date}
+                      category="Achievement"
+                      result={achievement.result}
+                      url={achievement.url}
+                      images={achievement.image.split(',').map((image) => image.trim()).filter(Boolean)}
+                      isHighlighted={achievement.featured}
                       index={index}
                     />
                   ))}

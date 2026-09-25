@@ -68,10 +68,10 @@ export default function Navbar() {
         {/* Logo */}
         <a
           href="#home"
-          className="text-lg font-bold tracking-tight text-brand-text transition hover:text-brand-gold group"
+          className="group flex items-center gap-2 text-lg font-bold tracking-tight text-brand-text transition hover:text-brand-gold"
         >
-          <span className="text-brand-gold">M</span>
-          <span className="text-brand-gold group-hover:text-brand-blue transition">Z</span>
+          <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="MZ" className="h-8 w-8 rounded-lg transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110" />
+          <span className="hidden text-xs font-mono uppercase tracking-[0.24em] text-brand-text-secondary sm:inline">Marwan Zidan</span>
         </a>
 
         {/* Desktop Navigation */}

@@ -429,6 +429,36 @@ html:not([data-theme='light']) .admin-nav {
   color: #A3A3A3 !important;
 }
 
+.admin-analytics-stat {
+  border: 1px solid rgba(90, 64, 40, 0.45);
+  border-radius: 0.5rem;
+  background: rgba(16, 16, 16, 0.7);
+  padding: 0.8rem;
+}
+
+.admin-analytics-stat span {
+  display: block;
+  color: #A3A3A3;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-analytics-stat strong {
+  display: block;
+  margin-top: 0.25rem;
+  color: #F5F5F5;
+  font-size: 1.75rem;
+}
+
+.admin-analytics-bar {
+  width: 100%;
+  min-height: 2px;
+  border-radius: 0.25rem 0.25rem 0 0;
+  background: linear-gradient(to top, #5A4028, #D6A73A);
+  transition: height 300ms ease;
+}
+
 html:not([data-theme='light']) .admin-nav:hover,
 html:not([data-theme='light']) .admin-nav.active {
   background: #211812 !important;
@@ -442,4 +472,14 @@ html:not([data-theme='light']) .admin-icon {
 html:not([data-theme='light']) .admin-icon:hover {
   border-color: #D6A73A !important;
   color: #D6A73A !important;
+}
+
+html:not([data-theme='light']) aside::before {
+  display: block;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-bottom: 0.75rem;
+  border-radius: 0.75rem;
+  background: url('/My_Portofolio/admin-mark.svg') center / cover no-repeat;
+  content: '';
 }

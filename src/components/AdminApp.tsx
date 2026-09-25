@@ -10,6 +10,7 @@ import {
   type Project,
   type Skill
 } from '../data/portfolioStore';
+import { getRecentTraffic, getTrafficAnalytics, getTrafficAnalyticsOnline, resetTrafficAnalytics } from '../data/trafficAnalytics';
 
 type Section = 'overview' | 'personal' | 'socials' | 'skills' | 'experience' | 'projects' | 'education' | 'certificates' | 'achievements' | 'seo' | 'appearance' | 'settings';
 
@@ -79,6 +80,7 @@ function Login({ onAuthenticated }: { onAuthenticated: () => void }) {
     <main className="flex min-h-screen items-center justify-center bg-slate-100 px-5 py-10">
       <form onSubmit={submit} className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-xl">
         <div className="mb-8">
+          <img src={`${import.meta.env.BASE_URL}admin-mark.svg`} alt="MZ Control" className="mb-5 h-14 w-14 rounded-2xl" />
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">Private workspace</p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">Portfolio control</h1>
           <p className="mt-2 text-sm leading-6 text-slate-500">Sign in to manage your portfolio content locally in this browser.</p>
@@ -93,6 +95,17 @@ function Login({ onAuthenticated }: { onAuthenticated: () => void }) {
 }
 
 function Overview({ content, setSection }: { content: PortfolioContent; setSection: (section: Section) => void }) {
+  const [traffic, setTraffic] = useState(getTrafficAnalytics);
+  useEffect(() => {
+    let active = true;
+    getTrafficAnalyticsOnline().then((onlineTraffic) => { if (active) setTraffic(onlineTraffic); });
+    return () => { active = false; };
+  }, []);
+  const recentTraffic = getRecentTraffic(traffic);
+  const today = recentTraffic[recentTraffic.length - 1]?.visits ?? 0;
+  const week = recentTraffic.reduce((total, day) => total + day.visits, 0);
+  const allTime = traffic.days.reduce((total, day) => total + day.visits, 0);
+  const maxVisits = Math.max(...recentTraffic.map((day) => day.visits), 1);
   const stats = [
     ['Projects', content.projects.length, 'projects'],
     ['Skills', content.skills.length, 'skills'],
@@ -104,6 +117,18 @@ function Overview({ content, setSection }: { content: PortfolioContent; setSecti
     <div className="space-y-6">
       <div className="admin-hero"><p className="text-sm font-semibold text-amber-800">Portfolio status</p><h2 className="mt-2 text-3xl font-bold text-slate-950">Your workspace is ready.</h2><p className="mt-2 max-w-2xl text-slate-600">Update content here, save locally, then open the public site to see the result.</p></div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">{stats.map(([label, count, section]) => <button key={label} onClick={() => setSection(section)} className="admin-stat text-left"><span>{label}</span><strong>{count}</strong></button>)}</div>
+      <div className="admin-card">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div><h3 className="admin-card-title">Portfolio activity</h3><p className="admin-muted">Local visits recorded on this browser, once per session.</p></div>
+          <button onClick={() => { resetTrafficAnalytics(); setTraffic({ days: [] }); }} className="admin-secondary text-xs">Reset analytics</button>
+        </div>
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+          {([['Today', today], ['Last 7 days', week], ['All time', allTime]] as const).map(([label, value]) => <div key={label} className="admin-analytics-stat"><span>{label}</span><strong>{value}</strong></div>)}
+        </div>
+        <div className="mt-6 flex h-32 items-end gap-2 border-b border-brand-warm/30 pb-1">
+          {recentTraffic.map((day) => <div key={day.date} className="flex h-full flex-1 flex-col items-center justify-end gap-2"><div className="admin-analytics-bar" style={{ height: `${Math.max((day.visits / maxVisits) * 100, day.visits ? 8 : 2)}%` }} title={`${day.visits} visit${day.visits === 1 ? '' : 's'}`} /><span className="text-[10px] text-slate-500">{day.date.slice(5)}</span></div>)}
+        </div>
+      </div>
       <div className="admin-card"><div className="flex items-center justify-between gap-4"><div><h3 className="admin-card-title">Quick actions</h3><p className="admin-muted">Jump into the parts you update most often.</p></div><FiCheck className="text-emerald-600" /></div><div className="mt-5 flex flex-wrap gap-3">{[['Edit Personal Info', 'personal'], ['Add Project', 'projects'], ['Add Experience', 'experience'], ['Add Certificate', 'certificates']].map(([label, section]) => <button key={label} onClick={() => setSection(section as Section)} className="admin-secondary"><FiPlus />{label}</button>)}<a className="admin-secondary" href="/" target="_blank" rel="noreferrer"><FiExternalLink />Preview Website</a></div></div>
     </div>
   );

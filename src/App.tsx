@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { PortfolioProvider } from './data/PortfolioProvider';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -10,6 +11,7 @@ import Certificates from './components/Certificates';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import AdminApp, { adminPath } from './components/AdminApp';
+import { recordPortfolioVisit } from './data/trafficAnalytics';
 
 function App() {
   const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -17,6 +19,10 @@ function App() {
     ? window.location.pathname.slice(basePath.length) || '/'
     : window.location.pathname;
   const isAdminRoute = currentPath === adminPath || currentPath.startsWith(`${adminPath}/`);
+
+  useEffect(() => {
+    if (!isAdminRoute) recordPortfolioVisit();
+  }, [isAdminRoute]);
 
   if (isAdminRoute) {
     return (

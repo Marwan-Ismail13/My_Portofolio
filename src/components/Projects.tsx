@@ -157,10 +157,21 @@ function MissionModal({ project, projects, onClose }: { project: Project; projec
 export default function Projects() {
   const { content: { projects } } = usePortfolio();
   const [activeProject, setActiveProject] = useState<string | null>(null);
+  const orderedProjects = useMemo(() => [...projects].sort((left, right) => Number(right.featured) - Number(left.featured)), [projects]);
+  const projectImage = (path: string) => {
+    const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+    let normalizedPath = path.split(',')[0].trim().replace(/^['"]|['"]$/g, '');
+    if (normalizedPath.startsWith(basePath)) normalizedPath = normalizedPath.slice(basePath.length);
+    normalizedPath = normalizedPath.replace(/^\/+/, '');
+    const correctedPath = normalizedPath.startsWith('images/ECPC_')
+      ? normalizedPath.replace('images/ECPC_', 'images/ECPC/ECPC_')
+      : normalizedPath;
+    return `${basePath}/${correctedPath}`;
+  };
 
   const selectedProject = useMemo(
-    () => projects.find((project) => project.id === activeProject) ?? null,
-    [activeProject]
+    () => orderedProjects.find((project) => project.id === activeProject) ?? null,
+    [activeProject, orderedProjects]
   );
 
   return (
@@ -173,7 +184,7 @@ export default function Projects() {
           description="A portfolio of meaningful projects where I've tackled real problems and shipped production software."
         />
 
-        {projects.length === 0 ? (
+        {orderedProjects.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -197,7 +208,7 @@ export default function Projects() {
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mt-16">
-            {projects.map((project, index) => (
+            {orderedProjects.map((project, index) => (
               <motion.article
                 key={project.id}
                 initial={{ opacity: 0, y: 24 }}
@@ -208,14 +219,9 @@ export default function Projects() {
                 className="group cursor-pointer"
                 onClick={() => setActiveProject(project.id)}
               >
-                {/* Image placeholder */}
+                {/* Project cover */}
                 <div className="relative h-48 sm:h-56 mb-6 rounded-xl bg-gradient-to-br from-brand-warm/30 via-brand-dark to-brand-blue/5 border border-brand-warm/30 overflow-hidden group-hover:border-brand-gold/60 transition">
-                  {/* Image would go here */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-6xl font-bold text-brand-gold/20">
-                      {String((projects.indexOf(project) + 1).toString().padStart(2, '0'))}
-                    </span>
-                  </div>
+                  {project.coverImage ? <img src={projectImage(project.coverImage)} alt={`${project.title} cover`} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <div className="absolute inset-0 flex items-center justify-center"><span className="text-6xl font-bold text-brand-gold/20">{String((orderedProjects.indexOf(project) + 1).toString().padStart(2, '0'))}</span></div>}
                 </div>
 
                 {/* Content */}
@@ -271,7 +277,7 @@ export default function Projects() {
       </div>
 
       {selectedProject && (
-        <MissionModal project={selectedProject} projects={projects} onClose={() => setActiveProject(null)} />
+        <MissionModal project={selectedProject} projects={orderedProjects} onClose={() => setActiveProject(null)} />
       )}
     </section>
   );
