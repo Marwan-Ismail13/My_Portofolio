@@ -12,7 +12,11 @@ import Footer from './components/Footer';
 import AdminApp, { adminPath } from './components/AdminApp';
 
 function App() {
-  const isAdminRoute = window.location.pathname === adminPath || window.location.pathname.startsWith(`${adminPath}/`);
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+  const currentPath = window.location.pathname.startsWith(basePath)
+    ? window.location.pathname.slice(basePath.length) || '/'
+    : window.location.pathname;
+  const isAdminRoute = currentPath === adminPath || currentPath.startsWith(`${adminPath}/`);
 
   if (isAdminRoute) {
     return (
