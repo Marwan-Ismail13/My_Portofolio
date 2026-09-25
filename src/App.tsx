@@ -17,16 +17,17 @@ function App() {
   const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
   const fallbackPath = window.sessionStorage.getItem('github-pages-route');
   if (fallbackPath) window.sessionStorage.removeItem('github-pages-route');
-  const routePath = fallbackPath || window.location.pathname;
+  const queryRoute = new URLSearchParams(window.location.search).get('route');
+  const routePath = queryRoute || fallbackPath || window.location.pathname;
   const currentPath = routePath.startsWith(basePath)
     ? routePath.slice(basePath.length) || '/'
     : routePath;
   const isAdminRoute = currentPath === adminPath || currentPath.startsWith(`${adminPath}/`);
 
   useEffect(() => {
-    if (fallbackPath) window.history.replaceState({}, '', fallbackPath);
+    if (queryRoute || fallbackPath) window.history.replaceState({}, '', `${basePath}${currentPath === '/' ? '/' : currentPath}`);
     if (!isAdminRoute) recordPortfolioVisit();
-  }, [fallbackPath, isAdminRoute]);
+  }, [basePath, currentPath, fallbackPath, isAdminRoute, queryRoute]);
 
   if (isAdminRoute) {
     return (
