@@ -15,14 +15,18 @@ import { recordPortfolioVisit } from './data/trafficAnalytics';
 
 function App() {
   const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
-  const currentPath = window.location.pathname.startsWith(basePath)
-    ? window.location.pathname.slice(basePath.length) || '/'
-    : window.location.pathname;
+  const fallbackPath = window.sessionStorage.getItem('github-pages-route');
+  if (fallbackPath) window.sessionStorage.removeItem('github-pages-route');
+  const routePath = fallbackPath || window.location.pathname;
+  const currentPath = routePath.startsWith(basePath)
+    ? routePath.slice(basePath.length) || '/'
+    : routePath;
   const isAdminRoute = currentPath === adminPath || currentPath.startsWith(`${adminPath}/`);
 
   useEffect(() => {
+    if (fallbackPath) window.history.replaceState({}, '', fallbackPath);
     if (!isAdminRoute) recordPortfolioVisit();
-  }, [isAdminRoute]);
+  }, [fallbackPath, isAdminRoute]);
 
   if (isAdminRoute) {
     return (
