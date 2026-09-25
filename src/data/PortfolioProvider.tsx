@@ -5,6 +5,7 @@ import {
   savePortfolio,
   type PortfolioContent
 } from './portfolioStore';
+import { getRemotePortfolio, saveRemotePortfolio } from './remotePortfolio';
 
 type PortfolioContextValue = {
   content: PortfolioContent;
@@ -21,6 +22,16 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const [savedSnapshot, setSavedSnapshot] = useState(() => JSON.stringify(content));
 
   useEffect(() => {
+    let active = true;
+    getRemotePortfolio().then((remoteContent) => {
+      if (!active || !remoteContent) return;
+      setContent(remoteContent);
+      setSavedSnapshot(JSON.stringify(remoteContent));
+    });
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
     document.documentElement.style.setProperty('--brand-gold', content.appearance.primaryGold);
     document.documentElement.style.setProperty('--brand-warm', content.appearance.warmBrown);
     document.documentElement.style.setProperty('--brand-blue', content.appearance.electricBlue);
@@ -32,6 +43,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     const saved = savePortfolio(content);
     setContent(saved);
     setSavedSnapshot(JSON.stringify(saved));
+    void saveRemotePortfolio(saved);
   };
 
   const resetChanges = () => {

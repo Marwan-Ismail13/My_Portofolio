@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from './supabaseClient';
 
 export type TrafficDay = {
   date: string;
@@ -11,9 +11,6 @@ export type TrafficAnalytics = {
 
 const STORAGE_KEY = 'marwan-portfolio-traffic-v1';
 const SESSION_KEY = 'marwan-portfolio-visit-recorded';
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseClientKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = supabaseUrl && supabaseClientKey ? createClient(supabaseUrl, supabaseClientKey) : null;
 
 function todayKey() {
   return new Date().toISOString().slice(0, 10);

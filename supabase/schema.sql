@@ -27,3 +27,33 @@ as $$
 $$;
 
 grant execute on function public.get_portfolio_traffic() to anon, authenticated;
+
+create table if not exists public.portfolio_content (
+  id text primary key,
+  content jsonb not null,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.portfolio_content enable row level security;
+
+drop policy if exists "Allow public portfolio content reads" on public.portfolio_content;
+create policy "Allow public portfolio content reads"
+on public.portfolio_content
+for select
+to anon, authenticated
+using (true);
+
+drop policy if exists "Allow admin portfolio content writes" on public.portfolio_content;
+create policy "Allow admin portfolio content writes"
+on public.portfolio_content
+for insert
+to anon, authenticated
+with check (true);
+
+drop policy if exists "Allow admin portfolio content updates" on public.portfolio_content;
+create policy "Allow admin portfolio content updates"
+on public.portfolio_content
+for update
+to anon, authenticated
+using (true)
+with check (true);
