@@ -33,7 +33,7 @@ export const personal = {
 
   portfolioUrl: '#',
 
-  resumeUrl: '#',
+  resumeUrl: `${import.meta.env.BASE_URL}Marwan_Zidan_CV.docx`,
 
   introduction:
     "I'm a Computer Science student at MSA University with a strong passion for Software Engineering, Full-Stack Development, and Artificial Intelligence. I enjoy transforming ideas into polished, user-focused applications while continuously improving my technical and problem-solving skills through real-world projects and continuous learning.",

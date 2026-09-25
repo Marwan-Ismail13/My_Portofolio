@@ -117,10 +117,11 @@ export default function Hero() {
               </a>
               <a
                 href={socials.resume}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-brand-gold/50 text-brand-text hover:bg-brand-gold/10 transition rounded-lg"
+                download="Marwan_Zidan_CV.docx"
+                className="cv-download inline-flex items-center justify-center gap-2 rounded-lg border border-brand-gold/50 px-6 py-3 text-brand-text"
               >
                 DOWNLOAD CV
-                <span className="text-lg">↓</span>
+                <span className="cv-download-icon text-lg">↓</span>
               </a>
             </motion.div>
 

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import { socials } from '../config/socials';
 
 const navItems = [
   { number: '01', label: 'IDENTITY', href: '#identity' },
@@ -76,14 +77,16 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-8 lg:flex">{navLinks}</nav>
 
-        {/* Resume Button */}
-        <a
-          href="#contact"
-          className="hidden items-center gap-2 px-4 py-2 text-sm font-semibold text-brand-black bg-brand-gold hover:bg-brand-gold/90 rounded transition-colors lg:inline-flex"
-        >
-          CV
-          <span>→</span>
-        </a>
+        <div className="hidden items-center gap-3 lg:flex">
+          <a
+            href={socials.resume}
+            download="Marwan_Zidan_CV.docx"
+            className="cv-download inline-flex items-center gap-2 rounded bg-brand-gold px-4 py-2 text-sm font-semibold text-brand-black"
+          >
+            <span>CV</span>
+            <span>→</span>
+          </a>
+        </div>
 
         {/* Mobile Menu Button */}
         <button
@@ -119,8 +122,9 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="#contact"
-              className="inline-flex w-full items-center justify-center gap-2 px-4 py-3 text-base font-semibold text-brand-black bg-brand-gold hover:bg-brand-gold/90 rounded transition-colors mt-4"
+              href={socials.resume}
+              download="Marwan_Zidan_CV.docx"
+              className="cv-download mt-4 inline-flex w-full items-center justify-center gap-2 rounded bg-brand-gold px-4 py-3 text-base font-semibold text-brand-black"
               onClick={() => setOpen(false)}
             >
               DOWNLOAD CV

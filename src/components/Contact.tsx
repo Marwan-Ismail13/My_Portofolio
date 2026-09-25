@@ -1,9 +1,36 @@
+import { useState, type FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import { FaEnvelope, FaMapMarkerAlt, FaPhone, FaLinkedin, FaGithub } from 'react-icons/fa';
 import { usePortfolio } from '../data/PortfolioProvider';
 
 export default function Contact() {
   const { content: { personal, socials } } = usePortfolio();
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const formspreeId = import.meta.env.VITE_FORMSPREE_ID;
+
+  const submitContactForm = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setStatus('sending');
+    if (!formspreeId) {
+      setStatus('error');
+      return;
+    }
+
+    const form = event.currentTarget;
+    try {
+      const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: new FormData(form)
+      });
+      if (!response.ok) throw new Error('Form submission failed');
+      form.reset();
+      setStatus('success');
+    } catch {
+      setStatus('error');
+    }
+  };
+
   return (
     <section id="contact" className="relative overflow-hidden py-20 sm:py-32 px-5 sm:px-8">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(90,64,40,0.18),transparent_55%)]" />
@@ -55,25 +82,26 @@ export default function Contact() {
             <p className="text-sm leading-6 text-brand-text-secondary mb-6">A professional resume ready to share with recruiters and hiring managers.</p>
             <a
               href={socials.resume}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex rounded-lg bg-brand-gold px-6 py-3 text-sm font-semibold text-brand-black hover:bg-brand-gold/90 transition"
+              download="Marwan_Zidan_CV.docx"
+              className="cv-download inline-flex rounded-lg bg-brand-gold px-6 py-3 text-sm font-semibold text-brand-black"
             >
-              Download CV →
+              <span>Download CV</span><span className="cv-download-icon">→</span>
             </a>
           </div>
         </div>
 
           <div className="rounded-xl border border-brand-surface bg-brand-surface/20 p-8">
           <p className="text-xs sm:text-sm uppercase tracking-widest text-brand-gold mb-6">Send a message</p>
-          <form className="mt-8 space-y-5">
+          <form className="mt-8 space-y-5" onSubmit={submitContactForm}>
             <div>
               <label className="text-sm text-brand-text-secondary uppercase tracking-wide" htmlFor="name">
                 Name
               </label>
               <input
                 id="name"
+                name="name"
                 type="text"
+                required
                 className="mt-3 w-full rounded-lg border border-brand-surface bg-brand-surface/30 px-4 py-3 text-brand-text outline-none focus:border-brand-gold/70 focus:bg-brand-surface/50 transition"
                 placeholder="Your name"
               />
@@ -84,7 +112,9 @@ export default function Contact() {
               </label>
               <input
                 id="email"
+                name="email"
                 type="email"
+                required
                 className="mt-3 w-full rounded-lg border border-brand-surface bg-brand-surface/30 px-4 py-3 text-brand-text outline-none focus:border-brand-gold/70 focus:bg-brand-surface/50 transition"
                 placeholder="you@example.com"
               />
@@ -95,12 +125,16 @@ export default function Contact() {
               </label>
               <textarea
                 id="message"
+                name="message"
+                required
                 className="mt-3 h-36 w-full rounded-lg border border-brand-surface bg-brand-surface/30 px-4 py-3 text-brand-text outline-none focus:border-brand-gold/70 focus:bg-brand-surface/50 transition"
                 placeholder="Tell me about your opportunity"
               />
             </div>
-            <button type="submit" className="inline-flex rounded-full bg-brand-gold px-6 py-3 text-sm font-semibold text-brand-black shadow-glow hover:bg-brand-gold/90 transition">
-              Send Message
+            {status === 'success' && <p role="status" className="text-sm text-emerald-400">Message sent successfully. I will get back to you soon.</p>}
+            {status === 'error' && <p role="alert" className="text-sm text-red-400">Unable to send your message. Check the form setup or email me directly.</p>}
+            <button type="submit" disabled={status === 'sending'} className="inline-flex rounded-full bg-brand-gold px-6 py-3 text-sm font-semibold text-brand-black shadow-glow transition hover:bg-brand-gold/90 disabled:cursor-not-allowed disabled:opacity-60">
+              {status === 'sending' ? 'Sending...' : 'Send Message'}
             </button>
           </form>
         </div>

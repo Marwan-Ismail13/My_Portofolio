@@ -30,7 +30,7 @@ function App() {
     <PortfolioProvider>
       <div className="min-h-screen bg-brand-black text-brand-text">
         <Navbar />
-        <main className="mx-auto w-full">
+        <main className="portfolio-main mx-auto w-full">
           <Hero />
           <About />
           <Skills />
